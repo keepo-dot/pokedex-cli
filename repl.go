@@ -38,3 +38,28 @@ func cleanInput(text string) []string {
 	splitString := strings.Split(lowerText, " ")
 	return splitString
 }
+
+func getCommands() map[string]cliCommand {
+	return map[string]cliCommand{
+		"exit": {
+			name:        "exit",
+			description: "Exit the Pokedex",
+			callback:    commandExit,
+		},
+		"help": {
+			name:        "help",
+			description: "Displays a help message",
+			callback:    commandHelp,
+		},
+		"map": {
+			name:        "map",
+			description: "Displays 20 areas in the Pokemon world. \nSubsequent calls show the next 20.",
+			callback:    commandMap,
+		},
+		"mapb": {
+			name:        "mapb",
+			description: "Displays the previous 20 areas in the Pokemon world.",
+			callback:    commandMapB,
+		},
+	}
+}
