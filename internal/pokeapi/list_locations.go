@@ -12,6 +12,16 @@ func (c *Client) GetLocations(pageURL *string) (LocationAreas, error) {
 	if pageURL != nil {
 		url = *pageURL
 	}
+
+	if val, ok := c.pokecache.Get(url); ok {
+		cacheHit := LocationAreas{}
+		err := json.Unmarshal(val, &cacheHit)
+		if err != nil {
+			return LocationAreas{}, fmt.Errorf("error unmarshalling cache hit: %w", err)
+		}
+		return cacheHit, nil
+	}
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return LocationAreas{}, fmt.Errorf("error during http request: %w", err)
@@ -29,10 +39,12 @@ func (c *Client) GetLocations(pageURL *string) (LocationAreas, error) {
 	if err != nil {
 		return LocationAreas{}, fmt.Errorf("error reading response body: %w", err)
 	}
+	c.pokecache.Add(url, jsonData)
 	locationsResp := LocationAreas{}
 	err = json.Unmarshal(jsonData, &locationsResp)
 	if err != nil {
 		return LocationAreas{}, fmt.Errorf("error during JSON Unmarshal: %w", err)
 	}
+
 	return locationsResp, nil
 }
