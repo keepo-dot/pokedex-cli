@@ -21,7 +21,7 @@ func startRepl(config *config) error {
 		inputCleaned := cleanInput(input)
 		cmd, exists := getCommands()[inputCleaned[0]]
 		if exists {
-			err := cmd.callback(config)
+			err := cmd.callback(config, inputCleaned[1:]...)
 			if err != nil {
 				fmt.Print(err)
 			}
@@ -60,6 +60,11 @@ func getCommands() map[string]cliCommand {
 			name:        "mapb",
 			description: "Displays the previous 20 areas in the Pokemon world.",
 			callback:    commandMapB,
+		},
+		"explore": {
+			name:        "explore",
+			description: "Displays the Pokemon in a given area.",
+			callback:    commandExplore,
 		},
 	}
 }
